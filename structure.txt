@@ -4,6 +4,16 @@ NEXA/
 ├── .env
 ├── requirements.txt
 │
-└── assets/
-    ├── dot.gif
-    └── sound.mp3
+├── assets/
+│   ├── dot.gif
+│   ├── startup.mp3
+│   ├── sound.mp3
+│
+├── modules/
+│   ├── voice.py
+│   ├── groq_api.py
+│   ├── actions.py
+│   ├── hotword.py
+│
+└── utils/
+    └── __init__.py
