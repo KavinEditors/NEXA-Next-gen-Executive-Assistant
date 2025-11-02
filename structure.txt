@@ -1,0 +1,9 @@
+NEXA/
+│
+├── main.py
+├── .env
+├── requirements.txt
+│
+└── assets/
+    ├── dot.gif
+    └── sound.mp3
