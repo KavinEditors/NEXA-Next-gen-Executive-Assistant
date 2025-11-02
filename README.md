@@ -23,22 +23,37 @@ all wrapped in a minimal floating interface with a glowing status indicator.
 ## 🏗️ Project Structure
 
 NEXA/
+
 ├── main.py
 
 ├── .env
+
 ├── requirements.txt
+
 │
+
 ├── assets/
+
 │   ├── dot.gif
+
 │   ├── startup.mp3
+
 │   └── sound.mp3
+
 │
+
 ├── modules/
+
 │   ├── voice.py
+
 │   ├── groq_api.py
+
 │   ├── actions.py
+
 │   └── hotword.py
+
 │
+
 └── utils/
     └── __init__.py
 
