@@ -24,6 +24,7 @@ all wrapped in a minimal floating interface with a glowing status indicator.
 
 NEXA/
 ├── main.py
+
 ├── .env
 ├── requirements.txt
 │
@@ -72,7 +73,7 @@ GROQ_API_KEY=your_groq_api_key_here
 ```
 🔑 Get your free Groq API key from: [https://console.groq.com](https://console.groq.com)
 
-> ⚠️ **Important:** Never upload your `.env` file to GitHub — keep it private.
+> ⚠️ **Important:** replace your api key in `.env`
 
 ---
 
@@ -111,29 +112,9 @@ Once launched:
 
 ---
 
-## 💡 Future Enhancements
-
-- Continuous background listening with noise filtering  
-- Multi-language recognition and voice selection  
-- GUI control dashboard for preferences and API setup  
-- Auto-start on Windows login (background service)  
-- Smart home / IoT integrations  
-
----
-
-## 👨‍💻 Author
-
-**Kavin**  
-Student · Programmer · Developer  
-GitHub: [https://github.com/KavinEditors](https://github.com/KavinEditors)
-
----
 
 ## 🧾 License
 
 This project is licensed under the **MIT License**.  
 You are free to use, modify, and distribute with proper attribution.
 
----
-
-> ⚡ **NEXA — Intelligence meets Execution.**
