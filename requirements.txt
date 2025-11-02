@@ -1,0 +1,8 @@
+pyttsx3
+SpeechRecognition
+pyautogui
+PyQt5
+pyaudio
+groq
+python-dotenv
+pygame
