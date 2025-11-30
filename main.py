@@ -1,6 +1,6 @@
 import os
 import threading
-from playsound import playsound
+from playsound3 import playsound
 from modules.voice import speak, listen_command
 from modules.hotword import wait_for_hotword
 from modules.actions import perform_action
