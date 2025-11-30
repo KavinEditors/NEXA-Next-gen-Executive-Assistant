@@ -3,7 +3,7 @@ pyttsx3
 pyaudio
 python-dotenv
 groq
-playsound
+playsound3
 pywhatkit
 pyautogui
 PyQt5
