@@ -1,9 +1,9 @@
 SpeechRecognition
 pyttsx3
 pyaudio
+playsound
 python-dotenv
 groq
-playsound3
-pywhatkit
-pyautogui
-PyQt5
+Requests
+gTTS
+pydub
