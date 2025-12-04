@@ -2,6 +2,7 @@ import subprocess
 import webbrowser
 import os
 
+# ---------------------- Apps and Websites ----------------------
 apps = {
     "edge": r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
     "chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -32,147 +33,146 @@ websites = {
     "prime video": "https://primevideo.com"
 }
 
-def open_app(name):
-    for key, path in apps.items():
-        if name in key:
-            subprocess.Popen([path])
-            return f"Opening {key.capitalize()}."
-    return None
-
-
+# ---------------------- System Controls ----------------------
 def control_system(cmd):
-    # Power Control
     if "shutdown" in cmd:
         os.system("shutdown /s /t 3")
         return "Shutting down system."
-
     if "restart" in cmd:
         os.system("shutdown /r /t 3")
         return "Restarting system."
-
     if "logout" in cmd or "sign out" in cmd:
         os.system("shutdown /l")
         return "Logging out."
-
     if "sleep" in cmd:
         os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
         return "Putting system to sleep."
-
     if "lock" in cmd:
         os.system("rundll32.exe user32.dll,LockWorkStation")
         return "Locking system."
-
-    # Volume
+    # Volume control (requires nircmd.exe in PATH)
     if "mute" in cmd:
         os.system("nircmd.exe mutesysvolume 1")
         return "Muted system volume."
-
     if "unmute" in cmd:
         os.system("nircmd.exe mutesysvolume 0")
         return "Unmuted system volume."
-
     if "increase volume" in cmd or "volume up" in cmd:
         os.system("nircmd.exe changesysvolume 5000")
         return "Increasing volume."
-
     if "decrease volume" in cmd or "volume down" in cmd:
         os.system("nircmd.exe changesysvolume -5000")
         return "Decreasing volume."
-
     # Brightness
     if "increase brightness" in cmd:
         os.system("nircmd.exe setbrightness +10")
         return "Increasing brightness."
-
     if "decrease brightness" in cmd:
         os.system("nircmd.exe setbrightness -10")
         return "Decreasing brightness."
-
     # WiFi
     if "turn on wifi" in cmd or "wifi on" in cmd:
         os.system('netsh interface set interface "Wi-Fi" admin=enabled')
         return "Turning on WiFi."
-
     if "turn off wifi" in cmd or "wifi off" in cmd:
         os.system('netsh interface set interface "Wi-Fi" admin=disabled')
         return "Turning off WiFi."
-
     # Hotspot
     if "hotspot on" in cmd or "turn on hotspot" in cmd:
         os.system("netsh wlan start hostednetwork")
         return "Turning on Hotspot."
-
     if "hotspot off" in cmd or "turn off hotspot" in cmd:
         os.system("netsh wlan stop hostednetwork")
         return "Turning off Hotspot."
-
     # Bluetooth
     if "bluetooth on" in cmd:
         os.system('powershell -command "Start-Service bthserv"')
         return "Turning on Bluetooth."
-
     if "bluetooth off" in cmd:
         os.system('powershell -command "Stop-Service bthserv"')
         return "Turning off Bluetooth."
-
     # Battery Saver
     if "battery saver on" in cmd:
         os.system('powercfg /setdcvalueindex SCHEME_CURRENT SUB_ENERGYSAVER ESBATTTHRESHOLD 98')
         os.system('powercfg /s SCHEME_CURRENT')
         return "Enabling battery saver."
-
     if "battery saver off" in cmd:
         os.system('powercfg /setdcvalueindex SCHEME_CURRENT SUB_ENERGYSAVER ESBATTTHRESHOLD 0')
         os.system('powercfg /s SCHEME_CURRENT')
         return "Disabling battery saver."
-
     return None
 
+
+# ---------------------- Open Apps ----------------------
+def open_app(name):
+    for key, path in apps.items():
+        if name in key:
+            subprocess.Popen([path])
+            return f"Opening {key.capitalize()}.", key.capitalize()
+    return None, None
+
+
+# ---------------------- Main Action Parser ----------------------
 def perform_action(query: str):
     query = query.lower()
     commands = [c.strip() for c in query.replace(" and ", ",").split(",")]
     responses = []
 
+    # Default target app if nothing specific requested
+    target_app = None
+    text_to_type = None
+
     for cmd in commands:
 
-        # ---------------- System Controls ----------------
+        # 1️⃣ System Controls
         sys_result = control_system(cmd)
         if sys_result:
             responses.append(sys_result)
             continue
 
-        # ---------------- Website Opening ----------------
-        if cmd in websites:   # Direct match e.g. "youtube"
+        # 2️⃣ Website Direct Open
+        if cmd in websites:
             webbrowser.open(websites[cmd])
             responses.append(f"Opening {cmd}.")
+            target_app = None
             continue
 
-        # If command starts with "open" followed by website/app name
+        # 3️⃣ Open App or Website
         if cmd.startswith("open"):
             name = cmd.replace("open", "").strip()
 
-            # Check website list
+            # Website match
             for site in websites:
                 if name == site or name.replace(" ", "") == site.replace(" ", ""):
                     webbrowser.open(websites[site])
                     responses.append(f"Opening {site}.")
+                    target_app = None
                     break
             else:
-                # Try app opening
-                r = open_app(name)
-                if r:
-                    responses.append(r)
+                # App match
+                app_resp, app_name = open_app(name)
+                if app_resp:
+                    responses.append(app_resp)
+                    target_app = app_name
+
+                    # Extract text after "type" if present
+                    if "type" in query:
+                        text_to_type = query.split("type", 1)[1].strip()
+                    break
                 else:
+                    # Default: search Google
                     webbrowser.open(f"https://www.google.com/search?q={name}")
                     responses.append(f"Searching for {name}.")
+                    target_app = "Notepad"
             continue
 
-        # ---------------- Search Internet ----------------
+        # 4️⃣ Search Command
         if cmd.startswith("search"):
             term = cmd.replace("search", "").strip()
             if term:
                 webbrowser.open(f"https://www.google.com/search?q={term}")
                 responses.append(f"Searching {term}.")
+                target_app = "Notepad"
             continue
 
-    return " | ".join(responses) if responses else None
+    return " | ".join(responses) if responses else None, target_app, text_to_type
